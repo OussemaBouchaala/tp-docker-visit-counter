@@ -79,7 +79,7 @@
   left=8pt,right=8pt,top=6pt,bottom=6pt,fonttitle=\bfseries\small,title=#1}
 \newcommand{\shot}[3][0.78]{%
   \begin{figure}[H]\centering
-  \fcolorbox{rule}{white}{\includegraphics[width=#1\textwidth]{screenshots/#2}}
+  \fcolorbox{rule}{white}{\includegraphics[width=#1\textwidth]{../report/screenshots/#2}}
   \caption{#3}\end{figure}}
 
 % ==================================================================
@@ -100,14 +100,14 @@
 \sloppy
 \begin{titlepage}
 \centering
-\noindent\begin{minipage}[c]{0.17\textwidth}\raggedright\includegraphics[width=\linewidth]{screenshots/logo_insat.jpg}\end{minipage}%
+\noindent\begin{minipage}[c]{0.17\textwidth}\raggedright\includegraphics[width=\linewidth]{../report/screenshots/logo_insat.jpg}\end{minipage}%
 \begin{minipage}[c]{0.62\textwidth}\centering\linespread{1.15}\selectfont
 {\small\bfseries REPUBLIC OF TUNISIA}\\[2pt]
 {\small Ministry of Higher Education and Scientific Research}\\[2pt]
 {\small\bfseries University of Carthage}\\[2pt]
 {\small\bfseries\color{accent} National Institute of Applied Sciences and Technology}
 \end{minipage}%
-\begin{minipage}[c]{0.21\textwidth}\raggedleft\includegraphics[width=\linewidth]{screenshots/logo_ucar.png}\end{minipage}\\[1.2cm]
+\begin{minipage}[c]{0.21\textwidth}\raggedleft\includegraphics[width=\linewidth]{../report/screenshots/logo_ucar.png}\end{minipage}\\[1.2cm]
 {\color{accent}\rule{\textwidth}{1.2pt}}\\[0.8cm]
 {\Huge\bfseries\color{ink} TP1 Docker -- Student Guide}\\[0.4cm]
 {\Large\color{accent} Everything that was asked, everything that was done,\\[0.15cm] and how every file works}\\[0.8cm]
@@ -277,7 +277,7 @@ $\rightarrow$ the page shows \emph{``Bonjour ! Cette page a été vue X fois. Je
 Redis writes every change to its append-only file in the volume, so the number survives.
 
 \subsection{\texttt{app/app.py} -- the web service}
-\lstinputlisting[language=Python,linerange={7-20,40-76}]{code/app.py}
+\lstinputlisting[language=Python,linerange={7-20,40-76}]{../report/code/app.py}
 \begin{itemize}[leftmargin=1.3em]
 \item Lines 7--20: read \texttt{REDIS\_HOST} (default \texttt{db-service}) and \texttt{REDIS\_PORT} from the environment and create a Redis client.
 \item \texttt{get\_hit\_count()}: \texttt{client.incr("hits")} adds 1 and returns the new value. If Redis is restarting it waits 0.5~s and retries up to 5 times -- this is what makes the robustness test smooth.
@@ -287,7 +287,7 @@ Redis writes every change to its append-only file in the volume, so the number s
 \end{itemize}
 
 \subsection{\texttt{Dockerfile} -- line by line}
-\lstinputlisting[language=Dockerfile]{code/Dockerfile}
+\lstinputlisting[language=Dockerfile]{../report/code/Dockerfile}
 \begin{center}\small
 \begin{tabularx}{\textwidth}{lX}
 \toprule
@@ -331,7 +331,7 @@ docker run -d --name db-service --network app-network \
 \shot[0.7]{08_robustness.png}{Real output of the robustness test: 8 visits, Redis deleted and recreated, next visit is 9.}
 
 \subsection{\texttt{docker-compose.yml} and \texttt{.env} (Part 3)}
-\lstinputlisting[language=yaml,firstline=6]{code/docker-compose.yml}
+\lstinputlisting[language=yaml,firstline=6]{../report/code/docker-compose.yml}
 \begin{itemize}[leftmargin=1.3em]
 \item \texttt{\$\{APP\_PORT\}}, \texttt{\$\{WEB\_HOST\_PORTS\}}\ldots{} are replaced by the values of the \texttt{.env} file sitting next to the YAML: no port is written ``in hard''.
 \item \texttt{web} has no \texttt{container\_name}: Docker must be free to create \texttt{web-1}, \texttt{web-2}, \texttt{web-3}.
@@ -339,7 +339,7 @@ docker run -d --name db-service --network app-network \
 \item \texttt{restart: unless-stopped}: containers restart automatically (e.g.\ after a reboot).
 \item The \texttt{lb} service has \texttt{profiles: ["lb"]}: it is only started when we add \texttt{--profile lb}.
 \end{itemize}
-\lstinputlisting[language=shell]{code/env.txt}
+\lstinputlisting[language=shell]{../report/code/env.txt}
 
 \subsection{Scaling: why 3 replicas cannot share port 80}
 \begin{center}
@@ -368,7 +368,7 @@ takes port 80, the two others fail. Two solutions were implemented:
 (2) a \textbf{load balancer}: \texttt{nginx} alone owns port 80 and forwards each request to one
 of the replicas through the internal network.
 
-\lstinputlisting{code/nginx.conf}
+\lstinputlisting{../report/code/nginx.conf}
 \texttt{server web:5000} is enough because Docker's DNS returns the IP addresses of
 \emph{all} replicas of the service \texttt{web}; \texttt{zone} shares the round-robin
 counter between nginx processes so that requests really alternate.
@@ -388,7 +388,7 @@ what this project created: containers, network, images and volume.
 \end{warn}
 
 \subsection{\texttt{tests/test\_app.py} -- unit tests}
-\lstinputlisting[language=Python,linerange={1-30}]{code/test_app.py}
+\lstinputlisting[language=Python,linerange={1-30}]{../report/code/test_app.py}
 \texttt{fakeredis} is an in-memory imitation of Redis, so the tests run anywhere (even
 in GitHub's servers) without a real database. The 4 tests check: the counter
 increments (1 then 2), the message contains the container ID, \texttt{/health}
@@ -417,7 +417,7 @@ We used a \textbf{multi-stage build} instead: no Java or Maven needed on the PC,
 \texttt{openjdk} image is avoided, and the final image contains no build tools.
 \end{itemize}
 
-\lstinputlisting[language=yaml,caption={\texttt{partA-tutorial/item-service-mongodb/docker-compose.yml}}]{code/compose.partA.yml}
+\lstinputlisting[language=yaml,caption={\texttt{partA-tutorial/item-service-mongodb/docker-compose.yml}}]{../report/code/compose.partA.yml}
 The application finds MongoDB by the service name \texttt{mongodb-container-one}; the
 environment variables \texttt{SPRING\_DATA\_MONGODB\_HOST/PORT} override the values written
 in \texttt{application-local.properties} (which pointed to \texttt{host.docker.internal:28000}).
@@ -438,7 +438,7 @@ in \texttt{application-local.properties} (which pointed to \texttt{host.docker.i
 \end{tikzpicture}
 \end{center}
 
-\lstinputlisting[language=yaml,firstline=10]{code/ci-cd.yml}
+\lstinputlisting[language=yaml,firstline=10]{../report/code/ci-cd.yml}
 
 \begin{itemize}[leftmargin=1.3em]
 \item \texttt{on: push: branches: ["main"]}: GitHub starts the workflow automatically on every commit pushed to \texttt{main}.
