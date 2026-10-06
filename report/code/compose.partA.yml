@@ -1,0 +1,26 @@
+# Part A - Tutorial: run MongoDB + the Spring Boot item service together
+services:
+  mongodb-container-one:
+    image: mongo:7
+    container_name: mongodb-container-one
+    ports:
+      - "28000:27017"          # host 28000 -> container 27017 (as in the course)
+    volumes:
+      - mongo-data:/data/db
+
+  springboot-with-mongodb-container-one:
+    build: .
+    image: springboot-with-mongodb:v1
+    container_name: springboot-with-mongodb-container-one
+    ports:
+      - "8090:8081"            # host 8090 -> app 8081
+    environment:
+      # Override application-local.properties (host.docker.internal:28000):
+      # inside the compose network the DB is reachable by its service name.
+      SPRING_DATA_MONGODB_HOST: mongodb-container-one
+      SPRING_DATA_MONGODB_PORT: "27017"
+    depends_on:
+      - mongodb-container-one
+
+volumes:
+  mongo-data:

@@ -1,0 +1,56 @@
+# ================================================================
+# Visit-Counter - orchestration with Docker Compose
+#   docker compose up -d --scale web=3
+# All ports / names come from the .env file.
+# ================================================================
+name: visit-counter
+
+services:
+  web:
+    build: .
+    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    # no container_name: required to be able to scale the service
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      APP_PORT: ${APP_PORT}
+    ports:
+      # a port RANGE so that each replica gets its own host port
+      - "${WEB_HOST_PORTS}:${APP_PORT}"
+    networks:
+      - app-network
+    depends_on:
+      - db-service
+    restart: unless-stopped
+
+  db-service:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]   # AOF persistence
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # ---- Bonus: load balancer in front of the 3 replicas ----
+  # started only with:  docker compose --profile lb up -d --scale web=3
+  lb:
+    image: nginx:alpine
+    profiles: ["lb"]
+    ports:
+      - "${LB_PORT}:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - app-network
+    depends_on:
+      - web
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+volumes:
+  redis-data:
+    name: redis-data
