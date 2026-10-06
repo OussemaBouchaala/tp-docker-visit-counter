@@ -1,5 +1,9 @@
 # TP Docker - Containerisation & Orchestration
 
+[![CI-CD Visit-Counter](https://github.com/OussemaBouchaala/tp-docker-visit-counter/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/OussemaBouchaala/tp-docker-visit-counter/actions/workflows/ci-cd.yml)
+
+Docker Hub image: https://hub.docker.com/r/oussemabouchaala/counter-app
+
 Students: Oussema Bouchaala, Mouin El Dabbabi, Mohamed Amin Saddoud, Mohamed Helmi Lakhdhar
 
 | Folder | Content |
