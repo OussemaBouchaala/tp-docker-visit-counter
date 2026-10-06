@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+test-results.xml
+target/
+.idea/
+*.iml
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
+report/terminal_log.txt
+report/*.synctex.gz
+partA-tutorial/logs/
